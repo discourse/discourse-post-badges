@@ -1,0 +1,1 @@
+# discourse-post-badges
