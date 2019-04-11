@@ -1,0 +1,68 @@
+<script type="text/discourse-plugin" version="0.8.25">
+
+  const { h } = require("virtual-dom");
+  const { ajax } = require("discourse/lib/ajax");
+  const { iconNode } = require("discourse-common/lib/icon-library");
+  
+  const container = Discourse.__container__;
+  const site = container.lookup("site:main");
+  const loc = site && site.mobileView ? "before" : "after";
+
+  const badgeName = settings.badges.split('|');
+  const badgeClass =  ["badge-type-gold", "badge-type-silver", "badge-type-bronze"];
+    
+  const badgeCache = {};
+  api.decorateWidget(`poster-name:${loc}`, dec => {
+    
+    let username = dec.attrs.username;
+    if (!badgeCache[username]) {
+      ajax(`/user-badges/${username}.json`).then(response => {
+        let badgeArray = [];
+        badgeName.forEach(name => {
+          response.badges.forEach(badge => {
+            if(badge["name"] == name) {
+              badgeArray.push({ 
+                icon: badge.icon.slice(3),
+                image: badge.image,
+                className: badgeClass[badge.badge_type_id-1],
+                title: badge.description,
+                url: `/badges/${badge.id}/${badge.slug}`
+              });
+              badgeCache[username] = badgeArray;
+              dec.widget.scheduleRerender();
+            }
+          });
+        });
+      });
+    }
+
+    function buildBadge(badge) {
+      if (badge) {
+        let iconBody;
+
+        if(badge.image) {
+          iconBody = dec.h("img", { attributes: { src: badge.image } });
+        } else if (badge.icon) {
+          iconBody = iconNode(badge.icon);
+        }
+
+        if (badge.url) {
+          iconBody = dec.h("a", { attributes: { href: badge.url } }, iconBody);
+        }
+
+        return dec.h("span.poster-icon", { className: badge.className, attributes: { title: badge.title } }, iconBody);
+      }
+    }
+
+    let posterBadges = [];
+    if (badgeCache[username]) {
+      badgeCache[username].forEach(badgeParts => {
+        posterBadges.push(buildBadge(badgeParts))
+      });
+    }
+
+    return posterBadges;
+
+  });
+  
+</script>

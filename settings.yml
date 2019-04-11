@@ -1,0 +1,8 @@
+badges:
+  type: list
+  default: ""
+  description: 
+    en: 'Use the name of the badge as it appears on the 
+         <a href="/admin/badges">list of badges</a>. 
+         Post badges will appear in the order they are 
+         added to this setting.'

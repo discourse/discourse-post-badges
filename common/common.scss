@@ -1,0 +1,41 @@
+.topic-meta-data .names {
+  flex-wrap: wrap;
+
+  span.poster-icon {
+    overflow: visible;
+
+    &.badge-type-bronze .fa {
+      color: $bronze;
+    }
+    &.badge-type-silver .fa {
+      color: $silver;
+    }
+    &.badge-type-gold .fa {
+      color: $gold;
+    }
+
+    a {
+      display: flex;
+    }
+
+    img {
+      height: 0.87em;
+      width: 0.87em;
+    }
+
+    .fa,
+    img {
+      opacity: 1;
+      animation: fadeIn 0.5s ease;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
