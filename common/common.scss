@@ -3,6 +3,8 @@
 
   span.poster-icon {
     overflow: visible;
+    display: flex;
+    align-items: center;
 
     &.badge-type-bronze .fa {
       color: $bronze;
@@ -14,11 +16,8 @@
       color: $gold;
     }
 
-    a {
-      display: flex;
-    }
-
     img {
+      display: flex;
       height: 0.87em;
       width: 0.87em;
     }
