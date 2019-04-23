@@ -26,7 +26,7 @@
                 image: badge.image,
                 className: badgeClass[badge.badge_type_id-1],
                 title: badge.description,
-                url: `/badges/${badge.id}/${badge.slug}`
+                url: `/badges/${badge.id}/${badge.slug}?username=${username}`
               });
               badgeCache[username] = badgeArray;
               dec.widget.scheduleRerender();
