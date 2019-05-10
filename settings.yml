@@ -6,3 +6,11 @@ badges:
          <a href="/admin/badges">list of badges</a>. 
          Post badges will appear in the order they are 
          added to this setting.'
+badge_link_destination:
+  type: enum
+  default: "user's badge page"
+  choices:
+    - "badge overview page"
+  description: 
+    en: "Where a user will be taken when they click on a
+         post badge."
