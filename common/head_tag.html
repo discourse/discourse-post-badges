@@ -10,14 +10,20 @@
 
   const badgeName = settings.badges.split('|');
   const badgeClass =  ["badge-type-gold", "badge-type-silver", "badge-type-bronze"];
-    
+  const is_user_badge_page = (settings.badge_link_destination === "user's badge page");
   const badgeCache = {};
+  
   api.decorateWidget(`poster-name:${loc}`, dec => {
     
     let username = dec.attrs.username;
     if (!badgeCache[username]) {
+      badgeCache[username] = "caching";
       ajax(`/user-badges/${username}.json`).then(response => {
         let badgeArray = [];
+        let badge_page = "";
+        if(is_user_badge_page) {
+          badge_page = `?username=${username}`;
+        }
         badgeName.forEach(name => {
           response.badges.forEach(badge => {
             if(badge["name"] == name) {
@@ -26,10 +32,9 @@
                 image: badge.image,
                 className: badgeClass[badge.badge_type_id-1],
                 title: badge.description,
-                url: `/badges/${badge.id}/${badge.slug}?username=${username}`
+                url: `/badges/${badge.id}/${badge.slug}` + badge_page
               });
               badgeCache[username] = badgeArray;
-              dec.widget.scheduleRerender();
             }
           });
         });
@@ -55,14 +60,20 @@
     }
 
     let posterBadges = [];
-    if (badgeCache[username]) {
+    if (badgeCache[username] && badgeCache[username] != "caching") {
       badgeCache[username].forEach(badgeParts => {
         posterBadges.push(buildBadge(badgeParts))
       });
     }
-
+    
     return posterBadges;
 
+  });
+  
+  api.decorateWidget(`poster-name:${loc}`, helper => {
+    $(function() {
+        helper.widget.scheduleRerender();
+    });
   });
   
 </script>
