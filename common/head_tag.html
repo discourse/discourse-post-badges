@@ -29,6 +29,9 @@
                 icon: badge.icon.slice(3),
                 image: badge.image,
                 className: badgeClass[badge.badge_type_id-1],
+                name: badge.slug,
+                id: badge.id,
+                badgeGroup: badge.badge_grouping_id,
                 title: badge.description,
                 url: `/badges/${badge.id}/${badge.slug}` + badge_page
               });
@@ -41,6 +44,8 @@
         });
       })
     }
+    let trustLevel = "";
+    let highestBadge = 0;
     function buildBadge(badge) {
       if (badge) {
         let iconBody;
@@ -49,20 +54,25 @@
         } else if (badge.icon) {
           iconBody = iconNode(badge.icon);
         }
-        if (badge.url) {
+        if(badge.url) {
           iconBody = dec.h("a", { attributes: { href: badge.url } }, iconBody);
         }
-        return dec.h("span.poster-icon", { className: badge.className, attributes: { title: badge.title } }, iconBody);
+        if(badge.badgeGroup === 4 && badge.id > highestBadge) {
+          highestBadge = badge.id;
+          trustLevel = badge.name + "-highest";
+        }
+        return dec.h("span.poster-icon", { className: badge.className + " " + badge.name, attributes: { title: badge.title } }, iconBody);
       }
     }
     let posterBadges = [];
     if (badgeCache[username] && badgeCache[username] != "caching" && badgeCache[username] != "none") {
+      badgeCache[username].sort((a, b) => (a.id > b.id) ? 1 : -1);
       badgeCache[username].forEach(badgeParts => {
-        posterBadges.push(buildBadge(badgeParts))
+        posterBadges.push(buildBadge(badgeParts));
       });
     }
     
-    return posterBadges;
+    return dec.h("div.poster-icon-container", { className: trustLevel }, posterBadges);
   });
 
   api.decorateWidget(`poster-name:${loc}`, helper => {

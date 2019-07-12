@@ -3,31 +3,54 @@
 .topic-meta-data .names {
   flex-wrap: wrap;
 
-  span.poster-icon {
-    overflow: visible;
+  .poster-icon-container {
     display: flex;
-    align-items: center;
 
-    &.badge-type-bronze .fa {
-      color: $bronze;
-    }
-    &.badge-type-silver .fa {
-      color: $silver;
-    }
-    &.badge-type-gold .fa {
-      color: $gold;
-    }
-
-    img {
+    span.poster-icon {
+      overflow: visible;
       display: flex;
-      height: 0.87em;
-      width: 0.87em;
+      align-items: center;
+      margin: 0 8px 0 0;
+
+      &.badge-type-bronze .fa {
+        color: $bronze;
+      }
+      &.badge-type-silver .fa {
+        color: $silver;
+      }
+      &.badge-type-gold .fa {
+        color: $gold;
+      }
+
+      img {
+        display: flex;
+        height: 0.87em;
+        width: 0.87em;
+      }
+
+      .fa,
+      img {
+        opacity: 1;
+        animation: fadeIn 0.5s ease;
+      }
     }
 
-    .fa,
-    img {
-      opacity: 1;
-      animation: fadeIn 0.5s ease;
+    @if $only_show_highest_trust_level == "true" {
+      span.poster-icon {
+        &.basic,
+        &.member,
+        &.regular,
+        &.leader {
+          display: none;
+        }
+      }
+
+      &.basic-highest .basic,
+      &.member-highest .member,
+      &.regular-highest .regular,
+      &.leader-highest .leader {
+        display: flex !important;
+      }
     }
   }
 }
