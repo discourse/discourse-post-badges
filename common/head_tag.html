@@ -24,9 +24,9 @@
         }
         badgeName.forEach(name => {
           response.badges.forEach(badge => {
-            if(badge["name"] == name) {
+            if(badge["name"].toLowerCase() === name.toLowerCase()) {
               badgeArray.push({ 
-                icon: badge.icon.slice(3),
+                icon: badge.icon.replace("fa-",""),
                 image: badge.image,
                 className: badgeClass[badge.badge_type_id-1],
                 name: badge.slug,
