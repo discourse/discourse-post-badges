@@ -3,8 +3,13 @@
 .topic-meta-data .names {
   flex-wrap: wrap;
 
+  & > span:not(.staff) {
+  	margin-right: 10px;
+  }
+
   .poster-icon-container {
     display: flex;
+    order: 2;
 
     span.poster-icon {
       overflow: visible;
