@@ -22,7 +22,7 @@
         if(is_user_badge_page) {
           badge_page = `?username=${username}`;
         }
-        if (response.badges.length) {
+        if (response.badges && response.badges.length) {
           badgeName.forEach(name => {
             response.badges.forEach(badge => {
               if(badge["name"].toLowerCase() === name.toLowerCase()) {
