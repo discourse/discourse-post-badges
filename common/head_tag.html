@@ -22,26 +22,28 @@
         if(is_user_badge_page) {
           badge_page = `?username=${username}`;
         }
-        badgeName.forEach(name => {
-          response.badges.forEach(badge => {
-            if(badge["name"].toLowerCase() === name.toLowerCase()) {
-              badgeArray.push({ 
-                icon: badge.icon.replace("fa-",""),
-                image: badge.image,
-                className: badgeClass[badge.badge_type_id-1],
-                name: badge.slug,
-                id: badge.id,
-                badgeGroup: badge.badge_grouping_id,
-                title: badge.description,
-                url: `/badges/${badge.id}/${badge.slug}` + badge_page
-              });
-              badgeCache[username] = badgeArray;
+        if (response.badges.length) {
+          badgeName.forEach(name => {
+            response.badges.forEach(badge => {
+              if(badge["name"].toLowerCase() === name.toLowerCase()) {
+                badgeArray.push({ 
+                  icon: badge.icon.replace("fa-",""),
+                  image: badge.image,
+                  className: badgeClass[badge.badge_type_id-1],
+                  name: badge.slug,
+                  id: badge.id,
+                  badgeGroup: badge.badge_grouping_id,
+                  title: badge.description,
+                  url: `/badges/${badge.id}/${badge.slug}` + badge_page
+                });
+                badgeCache[username] = badgeArray;
+              }
+            });
+            if(badgeArray.length == 0) {
+                badgeCache[username] = "none";
             }
           });
-          if(badgeArray.length == 0) {
-              badgeCache[username] = "none";
-          }
-        });
+        }
       })
     }
     let trustLevel = "";
