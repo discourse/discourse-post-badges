@@ -1,6 +1,6 @@
 {
   "name": "Post Badges",
   "about_url": "https://meta.discourse.org/t/post-badges-component/114722",
-  "license_url": "https://github.com/tshenry/discourse-post-badges/blob/master/LICENSE",
+  "license_url": "https://github.com/discourse/discourse-post-badges/blob/master/LICENSE",
   "component": true
 }

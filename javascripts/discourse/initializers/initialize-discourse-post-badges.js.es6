@@ -30,11 +30,6 @@ function buildBadge(badge, trustLevel, highestBadge) {
     iconBody = link;
   }
 
-  if (badge.badgeGroup === 4 && badge.id > highestBadge) {
-    highestBadge = badge.id;
-    trustLevel = `${badge.name}-highest`;
-  }
-
   const span = document.createElement("span");
   span.classList.add("poster-icon");
   span.classList.add(badge.className);
@@ -78,9 +73,13 @@ function appendBadges(badges, decorator) {
   let trustLevel = "";
   let highestBadge = 0;
   const badgesNodes = [];
-  badges.forEach(badge =>
-    badgesNodes.push(buildBadge(badge, trustLevel, highestBadge))
-  );
+  badges.forEach(badge => {
+    badgesNodes.push(buildBadge(badge, trustLevel, highestBadge));
+    if (badge.badgeGroup === 4 && badge.id > highestBadge) {
+      highestBadge = badge.id;
+      trustLevel = `${badge.name}-highest`;
+    }
+  });
 
   schedule("afterRender", () => {
     const postContainer = document.querySelector(selector);
