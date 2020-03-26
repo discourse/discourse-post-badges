@@ -10,9 +10,16 @@ const BADGE_CLASS = [
   "badge-type-bronze"
 ];
 
+const TRUST_LEVEL_BADGE = [
+  "basic",
+  "member",
+  "regular",
+  "leader"
+];
+
 const USER_BADGE_PAGE = "user's badge page";
 
-function buildBadge(badge, trustLevel, highestBadge) {
+function buildBadge(badge) {
   let iconBody;
 
   if (badge.image) {
@@ -33,7 +40,7 @@ function buildBadge(badge, trustLevel, highestBadge) {
   const span = document.createElement("span");
   span.classList.add("poster-icon");
   span.classList.add(badge.className);
-  span.classList.add(badge.name);
+  span.classList.add(TRUST_LEVEL_BADGE[badge.id - 1]);
   span.setAttribute("title", badge.title);
   span.appendChild(iconBody);
   return span;
@@ -74,10 +81,10 @@ function appendBadges(badges, decorator) {
   let highestBadge = 0;
   const badgesNodes = [];
   badges.forEach(badge => {
-    badgesNodes.push(buildBadge(badge, trustLevel, highestBadge));
+    badgesNodes.push(buildBadge(badge));
     if (badge.badgeGroup === 4 && badge.id > highestBadge) {
       highestBadge = badge.id;
-      trustLevel = `${badge.name}-highest`;
+      trustLevel = `${TRUST_LEVEL_BADGE[highestBadge - 1]}-highest`;
     }
   });
 
