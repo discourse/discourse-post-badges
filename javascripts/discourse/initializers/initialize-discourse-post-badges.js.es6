@@ -114,6 +114,8 @@ export default {
         .split("|")
         .filter(Boolean)
         .map(badge => badge.toLowerCase());
+      // BUG: badge.name renders badge.slug
+      console.log("displayedBadges:", displayedBadges);
 
       api.decorateWidget(`poster-name:${location}`, decorator => {
         const username = decorator.attrs.username;
