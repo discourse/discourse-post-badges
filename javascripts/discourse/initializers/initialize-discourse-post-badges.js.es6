@@ -21,9 +21,6 @@ const USER_BADGE_PAGE = "user's badge page";
 
 function buildBadge(badge) {
   let iconBody;
-  
-  // BUG: badge.name renders badge.slug
-  console.log("badge:", badge);
 
   if (badge.image) {
     const img = document.createElement("img");
@@ -109,14 +106,10 @@ export default {
     withPluginApi("0.8.25", api => {
       const isMobileView = Discourse.Site.currentProp("mobileView");
       const location = isMobileView ? "before" : "after";
-      // BUG: badge.name renders badge.slug
-      console.log("settings.badges:", settings.badges);
       const displayedBadges = settings.badges
         .split("|")
         .filter(Boolean)
         .map(badge => badge.toLowerCase());
-      // BUG: badge.name renders badge.slug
-      console.log("displayedBadges:", displayedBadges);
 
       api.decorateWidget(`poster-name:${location}`, decorator => {
         const username = decorator.attrs.username;
