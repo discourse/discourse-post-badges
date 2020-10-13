@@ -44,7 +44,7 @@ function buildBadge(badge) {
   span.classList.add("poster-icon");
   span.classList.add(badge.className);
   span.classList.add(TRUST_LEVEL_BADGE[badge.id - 1]);
-  span.setAttribute("title", badge.name);
+  span.setAttribute("title", badge.title);
   span.appendChild(iconBody);
   return span;
 }
