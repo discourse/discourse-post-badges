@@ -69,7 +69,7 @@ function loadUserBadges(username, displayedBadges) {
           id: badge.id,
           badgeGroup: badge.badge_grouping_id,
           title: badge.name,
-          description: badge.description
+          description: badge.description,
           url: `/badges/${badge.id}/${badge.slug}${badgePage}`
         };
       });
