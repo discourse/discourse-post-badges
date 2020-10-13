@@ -21,6 +21,9 @@ const USER_BADGE_PAGE = "user's badge page";
 
 function buildBadge(badge) {
   let iconBody;
+  
+  // BUG: badge.name renders badge.slug
+  console.log("badge:", badge);
 
   if (badge.image) {
     const img = document.createElement("img");
