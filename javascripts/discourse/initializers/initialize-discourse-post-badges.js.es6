@@ -106,7 +106,7 @@ export default {
       const isMobileView = Discourse.Site.currentProp("mobileView");
       const location = isMobileView ? "before" : "after";
       const displayedBadges = settings.badges
-        .split(",")
+        .split("|")
         .filter(Boolean)
         .map(badge => badge.toLowerCase());
 
