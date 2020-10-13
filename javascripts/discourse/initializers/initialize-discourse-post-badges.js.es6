@@ -108,6 +108,8 @@ export default {
     withPluginApi("0.8.25", api => {
       const isMobileView = Discourse.Site.currentProp("mobileView");
       const location = isMobileView ? "before" : "after";
+      // BUG: badge.name renders badge.slug
+      console.log("settings.badges:", settings.badges);
       const displayedBadges = settings.badges
         .split("|")
         .filter(Boolean)
