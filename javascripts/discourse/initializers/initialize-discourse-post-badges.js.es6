@@ -60,7 +60,7 @@ function loadUserBadges(username, displayedBadges) {
       .map(badge => {
         return {
           icon: badge.icon.replace("fa-", ""),
-          image: badge.image,
+          image: badge.image_url,
           className: BADGE_CLASS[badge.badge_type_id - 1],
           name: badge.slug,
           id: badge.id,
