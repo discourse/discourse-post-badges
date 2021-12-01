@@ -62,10 +62,11 @@ function loadUserBadges(username, displayedBadges) {
           icon: badge.icon.replace("fa-", ""),
           image: badge.image_url ? badge.image_url : badge.image,
           className: BADGE_CLASS[badge.badge_type_id - 1],
-          name: badge.slug,
+          name: badge.name,
           id: badge.id,
           badgeGroup: badge.badge_grouping_id,
-          title: badge.description,
+          title: badge.name,
+          description: badge.description,
           url: `/badges/${badge.id}/${badge.slug}${badgePage}`
         };
       });
