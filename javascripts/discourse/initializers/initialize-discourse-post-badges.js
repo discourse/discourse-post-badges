@@ -7,15 +7,10 @@ import { makeArray } from "discourse-common/lib/helpers";
 const BADGE_CLASS = [
   "badge-type-gold",
   "badge-type-silver",
-  "badge-type-bronze"
+  "badge-type-bronze",
 ];
 
-const TRUST_LEVEL_BADGE = [
-  "basic",
-  "member",
-  "regular",
-  "leader"
-];
+const TRUST_LEVEL_BADGE = ["basic", "member", "regular", "leader"];
 
 const USER_BADGE_PAGE = "user's badge page";
 
@@ -47,7 +42,7 @@ function buildBadge(badge) {
 }
 
 function loadUserBadges(username, displayedBadges) {
-  return ajax(`/user-badges/${username}.json`).then(response => {
+  return ajax(`/user-badges/${username}.json`).then((response) => {
     let badgePage = "";
 
     const isUserBadgePage = settings.badge_link_destination === USER_BADGE_PAGE;
@@ -56,8 +51,8 @@ function loadUserBadges(username, displayedBadges) {
     }
 
     return makeArray(response.badges)
-      .filter(badge => displayedBadges.includes(badge.name.toLowerCase()))
-      .map(badge => {
+      .filter((badge) => displayedBadges.includes(badge.name.toLowerCase()))
+      .map((badge) => {
         return {
           icon: badge.icon.replace("fa-", ""),
           image: badge.image_url ? badge.image_url : badge.image,
@@ -66,21 +61,19 @@ function loadUserBadges(username, displayedBadges) {
           id: badge.id,
           badgeGroup: badge.badge_grouping_id,
           title: badge.description,
-          url: `/badges/${badge.id}/${badge.slug}${badgePage}`
+          url: `/badges/${badge.id}/${badge.slug}${badgePage}`,
         };
       });
   });
 }
 
 function appendBadges(badges, decorator) {
-  const selector = `[data-post-id="${
-    decorator.attrs.id
-  }"] .poster-icon-container`;
+  const selector = `[data-post-id="${decorator.attrs.id}"] .poster-icon-container`;
 
   let trustLevel = "";
   let highestBadge = 0;
   const badgesNodes = [];
-  badges.forEach(badge => {
+  badges.forEach((badge) => {
     badgesNodes.push(buildBadge(badge));
     if (badge.badgeGroup === 4 && badge.id > highestBadge) {
       highestBadge = badge.id;
@@ -93,7 +86,7 @@ function appendBadges(badges, decorator) {
     if (postContainer) {
       postContainer.innerHTML = "";
       trustLevel && postContainer.classList.add(trustLevel);
-      badgesNodes.forEach(badgeNode => postContainer.appendChild(badgeNode));
+      badgesNodes.forEach((badgeNode) => postContainer.appendChild(badgeNode));
     }
   });
 }
@@ -102,22 +95,22 @@ export default {
   name: "discourse-post-badges",
 
   initialize(container) {
-    withPluginApi("0.8.25", api => {
+    withPluginApi("0.8.25", (api) => {
       const isMobileView = container.lookup("site:main").mobileView;
       const location = isMobileView ? "before" : "after";
       const displayedBadges = settings.badges
         .split("|")
         .filter(Boolean)
-        .map(badge => badge.toLowerCase());
+        .map((badge) => badge.toLowerCase());
 
-      api.decorateWidget(`poster-name:${location}`, decorator => {
+      api.decorateWidget(`poster-name:${location}`, (decorator) => {
         const username = decorator.attrs.username;
-        loadUserBadges(username, displayedBadges).then(badges =>
+        loadUserBadges(username, displayedBadges).then((badges) =>
           appendBadges(badges, decorator)
         );
 
         return decorator.h("div.poster-icon-container", {}, []);
       });
     });
-  }
+  },
 };
