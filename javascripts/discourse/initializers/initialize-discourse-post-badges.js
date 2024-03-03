@@ -37,7 +37,13 @@ function buildBadge(badge) {
   span.classList.add(badge.className);
   span.classList.add(TRUST_LEVEL_BADGE[badge.id - 1]);
   span.setAttribute("title", badge.title);
+  
+  // Append badge name next to the icon
+  const badgeNameSpan = document.createElement("span");
+  badgeNameSpan.textContent = badge.name;
   span.appendChild(iconBody);
+  span.appendChild(badgeNameSpan);
+
   return span;
 }
 
