@@ -1,8 +1,8 @@
+import { schedule } from "@ember/runloop";
 import { ajax } from "discourse/lib/ajax";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { iconHTML } from "discourse-common/lib/icon-library";
-import { schedule } from "@ember/runloop";
 import { makeArray } from "discourse-common/lib/helpers";
+import { iconHTML } from "discourse-common/lib/icon-library";
 
 const BADGE_CLASS = [
   "badge-type-gold",
@@ -96,7 +96,7 @@ export default {
 
   initialize(container) {
     withPluginApi("0.8.25", (api) => {
-      const isMobileView = container.lookup("site:main").mobileView;
+      const isMobileView = container.lookup("service:site").mobileView;
       const location = isMobileView ? "before" : "after";
       const displayedBadges = settings.badges
         .split("|")
