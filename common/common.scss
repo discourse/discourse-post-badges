@@ -1,14 +1,5 @@
 @import "common/foundation/variables";
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .topic-meta-data .names {
   flex-wrap: wrap;
 
@@ -40,12 +31,6 @@
         display: flex;
         height: 0.87em;
         width: 0.87em;
-      }
-
-      .fa,
-      img {
-        opacity: 1;
-        animation: fadeIn 0.5s ease;
       }
     }
 

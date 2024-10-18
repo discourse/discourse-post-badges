@@ -1,7 +1,5 @@
 import { schedule } from "@ember/runloop";
-import { ajax } from "discourse/lib/ajax";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { makeArray } from "discourse-common/lib/helpers";
 import { iconHTML } from "discourse-common/lib/icon-library";
 
 const BADGE_CLASS = [
@@ -35,36 +33,37 @@ function buildBadge(badge) {
   const span = document.createElement("span");
   span.classList.add("poster-icon");
   span.classList.add(badge.className);
-  span.classList.add(TRUST_LEVEL_BADGE[badge.id - 1]);
+  if (badge.id >= 1 && badge.id <= 4) {
+    // trust level badge
+    span.classList.add(TRUST_LEVEL_BADGE[badge.id - 1]);
+  }
   span.setAttribute("title", badge.title);
   span.appendChild(iconBody);
   return span;
 }
 
-function loadUserBadges(username, displayedBadges) {
-  return ajax(`/user-badges/${username}.json`).then((response) => {
-    let badgePage = "";
+function prepareBadges(allSerializedBadges, displayedBadges, username) {
+  let badgePage = "";
 
-    const isUserBadgePage = settings.badge_link_destination === USER_BADGE_PAGE;
-    if (isUserBadgePage) {
-      badgePage = `?username=${username}`;
-    }
+  const isUserBadgePage = settings.badge_link_destination === USER_BADGE_PAGE;
+  if (isUserBadgePage) {
+    badgePage = `?username=${username}`;
+  }
 
-    return makeArray(response.badges)
-      .filter((badge) => displayedBadges.includes(badge.name.toLowerCase()))
-      .map((badge) => {
-        return {
-          icon: badge.icon.replace("fa-", ""),
-          image: badge.image_url ? badge.image_url : badge.image,
-          className: BADGE_CLASS[badge.badge_type_id - 1],
-          name: badge.slug,
-          id: badge.id,
-          badgeGroup: badge.badge_grouping_id,
-          title: badge.description,
-          url: `/badges/${badge.id}/${badge.slug}${badgePage}`,
-        };
-      });
-  });
+  return allSerializedBadges
+    .filter((badge) => displayedBadges.includes(badge.name.toLowerCase()))
+    .map((badge) => {
+      return {
+        icon: badge.icon.replace("fa-", ""),
+        image: badge.image_url ? badge.image_url : badge.image,
+        className: BADGE_CLASS[badge.badge_type_id - 1],
+        name: badge.slug,
+        id: badge.id,
+        badgeGroup: badge.badge_grouping_id,
+        title: badge.description,
+        url: `/badges/${badge.id}/${badge.slug}${badgePage}`,
+      };
+    });
 }
 
 function appendBadges(badges, decorator) {
@@ -104,12 +103,18 @@ export default {
         .map((badge) => badge.toLowerCase());
 
       api.decorateWidget(`poster-name:${location}`, (decorator) => {
-        const username = decorator.attrs.username;
-        loadUserBadges(username, displayedBadges).then((badges) =>
-          appendBadges(badges, decorator)
-        );
+        const post = decorator.widget.findAncestorModel();
+        if (post.userBadges) {
+          const preparedBadges = prepareBadges(
+            post.userBadges,
+            displayedBadges,
+            post.username
+          );
 
-        return decorator.h("div.poster-icon-container", {}, []);
+          appendBadges(preparedBadges, decorator);
+
+          return decorator.h("div.poster-icon-container", {}, []);
+        }
       });
     });
   },
