@@ -104,7 +104,7 @@ export default {
 
       api.decorateWidget(`poster-name:${location}`, (decorator) => {
         const post = decorator.widget.findAncestorModel();
-        if (post.userBadges) {
+        if (post?.userBadges) {
           const preparedBadges = prepareBadges(
             post.userBadges,
             displayedBadges,
