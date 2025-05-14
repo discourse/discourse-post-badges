@@ -2,9 +2,11 @@
 
 RSpec.describe "Post Badges theme component", system: true do
   let!(:theme) { upload_theme_component }
+  let(:category) { Fabricate(:category) }
+  let(:topic) { Fabricate(:topic, category: category) }
   let(:user) { Fabricate(:user) }
   let(:user2) { Fabricate(:user) }
-  let(:post) { Fabricate(:post, user: user) }
+  let(:post) { Fabricate(:post, topic: topic, user: user) }
 
   let!(:user_badge) { Fabricate(:user_badge, badge: Badge.find_by(name: "First Like"), user: user) }
 
@@ -22,8 +24,8 @@ RSpec.describe "Post Badges theme component", system: true do
   end
 
   it "should display user badges on filtered posts" do
-    Fabricate(:post, user: user2)
-    Fabricate(:post, user: user)
+    Fabricate(:post, topic: topic, user: user2)
+    Fabricate(:post, topic: topic, user: user)
 
     theme.update_setting(:badges, "first like")
     theme.save!
