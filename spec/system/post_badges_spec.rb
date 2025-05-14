@@ -22,8 +22,8 @@ RSpec.describe "Post Badges theme component", system: true do
   end
 
   it "should display user badges on filtered posts" do
-    Fabricate(:post, topic: topic, user: user2)
-    Fabricate(:post, topic: topic, user: user)
+    Fabricate(:post, user: user2)
+    Fabricate(:post, user: user)
 
     theme.update_setting(:badges, "first like")
     theme.save!
