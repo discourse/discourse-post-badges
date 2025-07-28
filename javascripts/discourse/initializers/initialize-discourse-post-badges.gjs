@@ -1,4 +1,5 @@
-import { schedule } from "@ember/runloop";
+import { htmlSafe } from "@ember/template";
+import { withSilencedDeprecations } from "discourse/lib/deprecated";
 import { iconHTML } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
@@ -66,28 +67,10 @@ function prepareBadges(allSerializedBadges, displayedBadges, username) {
     });
 }
 
-function appendBadges(badges, decorator) {
-  const selector = `[data-post-id="${decorator.attrs.id}"] .poster-icon-container`;
-
-  let trustLevel = "";
-  let highestBadge = 0;
-  const badgesNodes = [];
-  badges.forEach((badge) => {
-    badgesNodes.push(buildBadge(badge));
-    if (badge.badgeGroup === 4 && badge.id > highestBadge) {
-      highestBadge = badge.id;
-      trustLevel = `${TRUST_LEVEL_BADGE[highestBadge - 1]}-highest`;
-    }
-  });
-
-  schedule("afterRender", () => {
-    const postContainer = document.querySelector(selector);
-    if (postContainer) {
-      postContainer.innerHTML = "";
-      trustLevel && postContainer.classList.add(trustLevel);
-      badgesNodes.forEach((badgeNode) => postContainer.appendChild(badgeNode));
-    }
-  });
+function renderBadges(preparedBadges) {
+  return htmlSafe(
+    preparedBadges.map((badge) => buildBadge(badge).outerHTML).join("")
+  );
 }
 
 export default {
@@ -102,20 +85,56 @@ export default {
         .filter(Boolean)
         .map((badge) => badge.toLowerCase());
 
-      api.decorateWidget(`poster-name:${location}`, (decorator) => {
-        const post = decorator.widget.findAncestorModel();
-        if (post?.userBadges) {
+      function renderBadgeHtml(post) {
+        if (post.userBadges) {
           const preparedBadges = prepareBadges(
             post.userBadges,
             displayedBadges,
             post.username
           );
-
-          appendBadges(preparedBadges, decorator);
-
-          return decorator.h("div.poster-icon-container", {}, []);
+          return renderBadges(preparedBadges);
         }
+      }
+
+      api.renderInOutlet(
+        `post-meta-data-poster-name__${location}`,
+        <template>
+          <div class="poster-icon-container">{{renderBadgeHtml @post}}</div>
+        </template>
+      );
+
+      withSilencedDeprecations("discourse.post-stream-widget-overrides", () => {
+        api.decorateWidget(`poster-name:${location}`, (decorator) => {
+          const post = decorator.widget.findAncestorModel();
+          if (post?.userBadges) {
+            return decorator.rawHtml(
+              `<div class="poster-icon-container">
+                ${renderBadgeHtml(post)}
+              </div>`
+            );
+          }
+        });
       });
+
+      api.registerValueTransformer(
+        "post-article-class",
+        ({ value: classes, context }) => {
+          let trustLevel = "";
+          let highestBadge = 0;
+          context.post.userBadges.forEach((badge) => {
+            if (badge.badge_grouping_id === 4 && badge.id > highestBadge) {
+              highestBadge = badge.id;
+              trustLevel = `${TRUST_LEVEL_BADGE[highestBadge - 1]}-highest`;
+            }
+          });
+
+          if (trustLevel) {
+            classes.push(trustLevel);
+          }
+
+          return classes;
+        }
+      );
     });
   },
 };
