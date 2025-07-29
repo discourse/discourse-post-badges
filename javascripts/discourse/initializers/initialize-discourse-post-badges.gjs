@@ -121,7 +121,7 @@ export default {
         ({ value: classes, context }) => {
           let trustLevel = "";
           let highestBadge = 0;
-          context.post.userBadges.forEach((badge) => {
+          context.post.userBadges?.forEach((badge) => {
             if (badge.badge_grouping_id === 4 && badge.id > highestBadge) {
               highestBadge = badge.id;
               trustLevel = `${TRUST_LEVEL_BADGE[highestBadge - 1]}-highest`;
