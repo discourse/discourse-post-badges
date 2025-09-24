@@ -78,8 +78,7 @@ export default {
 
   initialize(container) {
     withPluginApi("0.8.25", (api) => {
-      const isMobileView = container.lookup("service:site").mobileView;
-      const location = isMobileView ? "before" : "after";
+      const site = container.lookup("service:site");
       const displayedBadges = settings.badges
         .split("|")
         .filter(Boolean)
@@ -97,21 +96,47 @@ export default {
       }
 
       api.renderInOutlet(
-        `post-meta-data-poster-name__${location}`,
+        "post-meta-data-poster-name__before",
         <template>
-          <div class="poster-icon-container">{{renderBadgeHtml @post}}</div>
+          {{#if site.mobileView}}
+            <div class="poster-icon-container">{{renderBadgeHtml @post}}</div>
+          {{/if}}
+        </template>
+      );
+
+      api.renderInOutlet(
+        "post-meta-data-poster-name__after",
+        <template>
+          {{#if site.desktopView}}
+            <div class="poster-icon-container">{{renderBadgeHtml @post}}</div>
+          {{/if}}
         </template>
       );
 
       withSilencedDeprecations("discourse.post-stream-widget-overrides", () => {
-        api.decorateWidget(`poster-name:${location}`, (decorator) => {
-          const post = decorator.widget.findAncestorModel();
-          if (post?.userBadges) {
-            return decorator.rawHtml(
-              `<div class="poster-icon-container">
+        api.decorateWidget("poster-name:before", (decorator) => {
+          if (site.mobileView) {
+            const post = decorator.widget.findAncestorModel();
+            if (post?.userBadges) {
+              return decorator.rawHtml(
+                `<div class="poster-icon-container">
                 ${renderBadgeHtml(post)}
               </div>`
-            );
+              );
+            }
+          }
+        });
+
+        api.decorateWidget("poster-name:after", (decorator) => {
+          if (site.desktopView) {
+            const post = decorator.widget.findAncestorModel();
+            if (post?.userBadges) {
+              return decorator.rawHtml(
+                `<div class="poster-icon-container">
+                ${renderBadgeHtml(post)}
+              </div>`
+              );
+            }
           }
         });
       });
