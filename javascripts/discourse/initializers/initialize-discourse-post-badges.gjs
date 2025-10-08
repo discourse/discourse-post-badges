@@ -77,7 +77,7 @@ export default {
   name: "discourse-post-badges",
 
   initialize(container) {
-    withPluginApi("0.8.25", (api) => {
+    withPluginApi((api) => {
       const site = container.lookup("service:site");
       const displayedBadges = settings.badges
         .split("|")
