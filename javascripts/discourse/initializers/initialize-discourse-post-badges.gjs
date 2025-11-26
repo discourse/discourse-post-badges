@@ -1,5 +1,4 @@
 import { htmlSafe } from "@ember/template";
-import { withSilencedDeprecations } from "discourse/lib/deprecated";
 import { iconHTML } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
@@ -112,34 +111,6 @@ export default {
           {{/if}}
         </template>
       );
-
-      withSilencedDeprecations("discourse.post-stream-widget-overrides", () => {
-        api.decorateWidget("poster-name:before", (decorator) => {
-          if (site.mobileView) {
-            const post = decorator.widget.findAncestorModel();
-            if (post?.userBadges) {
-              return decorator.rawHtml(
-                `<div class="poster-icon-container">
-                ${renderBadgeHtml(post)}
-              </div>`
-              );
-            }
-          }
-        });
-
-        api.decorateWidget("poster-name:after", (decorator) => {
-          if (site.desktopView) {
-            const post = decorator.widget.findAncestorModel();
-            if (post?.userBadges) {
-              return decorator.rawHtml(
-                `<div class="poster-icon-container">
-                ${renderBadgeHtml(post)}
-              </div>`
-              );
-            }
-          }
-        });
-      });
 
       api.registerValueTransformer(
         "post-article-class",
