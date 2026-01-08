@@ -52,6 +52,12 @@ function prepareBadges(allSerializedBadges, displayedBadges, username) {
 
   return allSerializedBadges
     .filter((badge) => displayedBadges.includes(badge.name.toLowerCase()))
+    .sort((a, b) => {
+      return (
+        displayedBadges.indexOf(a.name.toLowerCase()) -
+        displayedBadges.indexOf(b.name.toLowerCase())
+      );
+    })
     .map((badge) => {
       return {
         icon: badge.icon.replace("fa-", ""),
